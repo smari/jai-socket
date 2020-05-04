@@ -9,7 +9,7 @@ Cannibalizing this is highly encouraged.
 
 # Usage
 
-Easiest is to either load it into your program like so:
+Easiest is to load it into your program like so:
 
 ```
 #load "jai-socket/module.jai";
