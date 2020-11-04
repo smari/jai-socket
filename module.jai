@@ -44,10 +44,22 @@ addrinfo :: struct {
     ai_next     : *addrinfo;
 };
 
-setsockopt :: (socket: s32, level: s32, option_name: s32, option_value: *void, option_len: socklen_t) -> s32 #foreign libc;
+setsockopt :: (socket: s32, level: s32, option_name: s32, option_value: *void, option_len: socklen_t) -> s32 #foreign libc "setsockopt";
 listen :: (sockfd: s32, backlog: int) -> s32 #foreign libc;
+connect :: (sockfd: s32, addr: *sockaddr, addrlen: *socklen_t) -> s32 #foreign libc;
 accept :: (sockfd: s32, addr: *sockaddr, addrlen: *socklen_t) -> s32 #foreign libc "accept";
 bind :: (sockfd: s32, addr: *sockaddr, addrlen: socklen_t) -> s32 #foreign libc;
+getsockname :: (sockfd: s32, addr: *sockaddr, addrlen: *socklen_t) -> s32 #foreign libc;
+
+write :: inline (fd: s32, msg: string) -> s64 {
+    return write(fd, cast(*void) msg.data, cast(size_t) msg.count);
+}
+
+write :: inline (fd: s32, buf: string, args: ..Any) -> s64 {
+    tmp := tprint(buf, ..args);
+    return write(fd, tmp.data, cast(size_t) tmp.count);
+}
+
 
 accept :: (sockfd: s32, client: *sockaddr) -> s32 {
     clientlen : u32 = size_of(sockaddr);
@@ -65,8 +77,10 @@ bind :: (socket : s32, address: string, port: u16, family: u16 = AF_INET) -> s32
     server_address : sockaddr_in;
     server_address.sin_family = family;
     // TODO: Eliminate inet_addr() call.
-    server_address.sin_addr = inet_addr(to_c_string(address));;
+    addr := to_c_string(address);
+    server_address.sin_addr = inet_addr(addr);
     server_address.sin_port = htons(port);
+    free(addr);
     return bind(socket, cast(*sockaddr)*server_address, size_of(sockaddr_in));
 }
 
@@ -181,7 +195,7 @@ SOL_KCM                  :: 281;
 SOL_TLS                  :: 282;
 SOL_XDP                  :: 283;
 
-SOL_SOCKET               :: 0xffff;
+SOL_SOCKET               :: 0x1;
 
 // IPX options
 IPX_TYPE                 :: 1;
@@ -192,7 +206,7 @@ IPX_TYPE                 :: 1;
  */
 SO_DEBUG                  :: 0x0001;		/* turn on debugging info recording */
 SO_ACCEPTCONN             :: 0x0002;		/* socket has had listen() */
-SO_REUSEADDR              :: 0x0004;		/* allow local address reuse */
+SO_REUSEADDR              :: 0x0002;		/* allow local address reuse */
 SO_KEEPALIVE              :: 0x0008;		/* keep connections alive */
 SO_DONTROUTE              :: 0x0010;		/* just use interface addresses */
 SO_BROADCAST              :: 0x0020;		/* permit sending of broadcast msgs */
