@@ -13,7 +13,7 @@ sockaddr_in :: struct {
     sin_family : u16;     // Address family
     sin_port   : u16;     // Port number
     sin_addr   : in_addr; // IP address
-    sin_zero   : [8]u8;    // Pad to size of 'sockaddr'
+    sin_zero   : [8]u8;   // Pad to size of 'sockaddr'
 };
 
 to_string :: (addr: sockaddr_in) -> string {
@@ -34,13 +34,14 @@ hostent :: struct {
 }
 
 addrinfo :: struct {
-    ai_flags    : int;
-    ai_family   : int;
-    ai_socktype : int;
-    ai_protocol : int;
+    ai_flags    : s32;
+    ai_family   : s32;
+    ai_socktype : s32;
+    ai_protocol : s32;
     ai_addrlen  : socklen_t;
     ai_addr     : *sockaddr;
     ai_canonname: *u8;
+
     ai_next     : *addrinfo;
 };
 
@@ -96,8 +97,8 @@ bind :: (socket : s32, address: u32, port: u16, family: u16 = AF_INET) -> s32 {
 // This is obsolete though
 gethostbyaddr :: (addr: *void, len: socklen_t, type: int) -> *hostent #foreign libc;
 
-getaddrinfo :: (node: []u8, service: []u8, hints: *addrinfo, res: **addrinfo) -> s32 #foreign libc;
-
+getaddrinfo :: (node: *u8, service: *u8, hints: *addrinfo, res: **addrinfo) -> s32 #foreign libc;
+freeaddrinfo :: (ai: *addrinfo) #foreign libc;
 
 htonl :: (hostlong : u32) -> u32 #foreign libc;
 htons :: (hostshort : u16) -> u16 #foreign libc;
