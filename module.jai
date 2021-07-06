@@ -98,7 +98,7 @@ bind :: (socket : s32, address: u32, port: u16, family: u16 = AF_INET) -> s32 {
 gethostbyaddr :: (addr: *void, len: socklen_t, type: int) -> *hostent #foreign libc;
 
 getaddrinfo :: (node: *u8, service: *u8, hints: *addrinfo, res: **addrinfo) -> s32 #foreign libc;
-freeaddrinfo :: (ai: *addrinfo) -> void #foreign libc;
+freeaddrinfo :: (ai: *addrinfo) #foreign libc;
 
 htonl :: (hostlong : u32) -> u32 #foreign libc;
 htons :: (hostshort : u16) -> u16 #foreign libc;
