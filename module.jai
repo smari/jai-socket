@@ -13,7 +13,7 @@ sockaddr_in :: struct {
     sin_family : u16;     // Address family
     sin_port   : u16;     // Port number
     sin_addr   : in_addr; // IP address
-    sin_zero   : [8]u8;    // Pad to size of 'sockaddr'
+    sin_zero   : [8]u8;   // Pad to size of 'sockaddr'
 };
 
 to_string :: (addr: sockaddr_in) -> string {
