@@ -3,19 +3,6 @@
 // Smári McCarthy, 2020-05-02
 
 
-socklen_t :: u32;
-
-in_addr :: struct {
-    s_addr     : u32;
-}
-
-sockaddr_in :: struct {
-    sin_family : u16;     // Address family
-    sin_port   : u16;     // Port number
-    sin_addr   : in_addr; // IP address
-    sin_zero   : [8]u8;   // Pad to size of 'sockaddr'
-};
-
 to_string :: (addr: sockaddr_in) -> string {
     // TODO: This is hacky ass shit.
     a := cast(u8) (addr.sin_addr.s_addr >> 0) & 0xff;
@@ -24,26 +11,6 @@ to_string :: (addr: sockaddr_in) -> string {
     d := cast(u8) (addr.sin_addr.s_addr >> 24) & 0xff;
     return tprint("%.%.%.%:%", a, b, c, d, addr.sin_port);
 }
-
-hostent :: struct {
-    h_name      : []u8;       /* official name of host */
-    h_aliases   : *[]u8;      /* alias list */
-    h_addrtype  : int;        /* host address type */
-    h_length    : int;        /* length of address */
-    h_addr_list : *[]u8;      /* list of addresses */
-}
-
-addrinfo :: struct {
-    ai_flags    : s32;
-    ai_family   : s32;
-    ai_socktype : s32;
-    ai_protocol : s32;
-    ai_addrlen  : socklen_t;
-    ai_addr     : *sockaddr;
-    ai_canonname: *u8;
-
-    ai_next     : *addrinfo;
-};
 
 listen :: (sockfd: s32, backlog: int) -> s32 #foreign libc;
 connect :: (sockfd: s32, addr: *sockaddr, addrlen: *socklen_t) -> s32 #foreign libc;
@@ -112,9 +79,6 @@ inet_makeaddr :: (net : int, host : int) -> in_addr #foreign libc;
 inet_lnaof :: (in : in_addr) -> in_addr #foreign libc;
 inet_netof :: (in : in_addr) -> in_addr #foreign libc;
 
-// Maximum queue length specifiable by listen.
-SOMAXCONN :: 128;
-
 // Flags we can use with send/ and recv.
 // Added those for 1003.1g not all are supported yet
 MSG_OOB                 :: 1;
@@ -132,7 +96,7 @@ MSG_SYN                 :: 0x400;
 MSG_CONFIRM             :: 0x800; // Confirm path validity
 MSG_RST                 :: 0x1000;
 MSG_ERRQUEUE            :: 0x2000; // Fetch message from error queue
-MSG_NOSIGNAL            :: 0x4000; // Do not generate SIGPIPE
+// MSG_NOSIGNAL            :: 0x4000; // Do not generate SIGPIPE
 MSG_MORE                :: 0x8000; // Sender will send more
 MSG_WAITFORONE          :: 0x10000; // recvmmsg(): block until 1+ packets avail
 MSG_SENDPAGE_NOPOLICY   :: 0x10000; // sendpage() internal : do no apply policy
@@ -195,8 +159,6 @@ SOL_KCM                  :: 281;
 SOL_TLS                  :: 282;
 SOL_XDP                  :: 283;
 
-SOL_SOCKET               :: 0x1;
-
 // IPX options
 IPX_TYPE                 :: 1;
 
@@ -206,7 +168,7 @@ IPX_TYPE                 :: 1;
  */
 SO_DEBUG                  :: 0x0001;		/* turn on debugging info recording */
 SO_ACCEPTCONN             :: 0x0002;		/* socket has had listen() */
-SO_REUSEADDR              :: 0x0002;		/* allow local address reuse */
+//SO_REUSEADDR              :: 0x0002;		/* allow local address reuse */
 SO_KEEPALIVE              :: 0x0008;		/* keep connections alive */
 SO_DONTROUTE              :: 0x0010;		/* just use interface addresses */
 SO_BROADCAST              :: 0x0020;		/* permit sending of broadcast msgs */
