@@ -45,7 +45,6 @@ addrinfo :: struct {
     ai_next     : *addrinfo;
 };
 
-setsockopt :: (socket: s32, level: s32, option_name: s32, option_value: *void, option_len: socklen_t) -> s32 #foreign libc "setsockopt";
 listen :: (sockfd: s32, backlog: int) -> s32 #foreign libc;
 connect :: (sockfd: s32, addr: *sockaddr, addrlen: *socklen_t) -> s32 #foreign libc;
 accept :: (sockfd: s32, addr: *sockaddr, addrlen: *socklen_t) -> s32 #foreign libc "accept";
