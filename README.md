@@ -1,3 +1,11 @@
+** THIS PROJECT IS DEPRECATED **
+
+As of Jai 0.1.040, this library has been merged into the standard library. It will therefore
+no longer be maintained separately. 
+
+~~~~
+
+
 # Jai Socket Library
 
 Basic socket/networking library for Jai. Currently pretty rudimentary, but fills
